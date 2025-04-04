@@ -5,13 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.wordle.navigation.WordleNavigation
 import com.example.wordle.ui.theme.WordleTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            MyApp {
+                WordleNavigation()
+            }
         }
     }
 }
@@ -27,6 +30,6 @@ fun MyApp(content: @Composable () -> Unit){
 @Composable
 fun GreetingPreview() {
     MyApp {
-
+        WordleNavigation()
     }
 }
