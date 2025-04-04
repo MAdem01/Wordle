@@ -16,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,6 +27,11 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.wordle.components.InputField
+import com.example.wordle.model.Letter
+import com.example.wordle.widgets.GuessRow
+
+val randomWord = "rando".toCharArray()
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,11 +59,11 @@ fun WordleScreen(navController: NavController) {
 fun MainContent(
     paddingValues: PaddingValues,
     onValChange: (String) -> Unit = {}
-){
-    val guessState = remember{ mutableStateOf("") }
+) {
+    val guessState = remember { mutableStateOf("") }
     val validState = remember(guessState.value) { guessState.value.trim().isNotEmpty() }
+    val guessList = remember { mutableStateListOf<List<Letter>>() }
     val keyboardController = LocalSoftwareKeyboardController.current
-
 
     Surface(modifier = Modifier.padding(paddingValues)) {
         Column(
@@ -67,22 +73,42 @@ fun MainContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(items = listOf("Hahah", "hihihi")){ guess ->
-                    Text(text = guess)
+                items(items = guessList) { guess ->
+                    GuessRow(guess)
                 }
             }
             InputField(
                 modifier = Modifier.fillMaxWidth(),
-                valueState =guessState,
+                valueState = guessState,
                 labelId = "Guess",
                 enabled = true,
                 isSingleLine = true,
                 onAction = KeyboardActions {
-                    if(!validState) return@KeyboardActions
+                    if (!validState) return@KeyboardActions
                     onValChange(guessState.value.trim())
+                    guessList.add(createListOfLetters(guessState.value))
                     keyboardController?.hide()
                 }
             )
         }
+    }
+}
+
+fun createListOfLetters(word: String): List<Letter>{
+    val letters = word.mapIndexed{ index, letter  ->
+        val letterColor = getLetterColor(index = index, letter = letter)
+        Letter(char = letter.toString(), color = letterColor)
+    }
+
+    return letters
+}
+
+fun getLetterColor(index: Int, letter: Char): Color{
+    return if(randomWord[index] == letter){
+        Color.Green
+    }else if(randomWord.contains(letter) && randomWord[index] != letter){
+        Color.Yellow
+    }else{
+        Color.Red
     }
 }
