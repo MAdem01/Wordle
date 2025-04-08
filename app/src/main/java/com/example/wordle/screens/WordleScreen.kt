@@ -120,15 +120,17 @@ fun createListOfLetters(word: String): List<Letter>{
         }
     }
 
-    return letters
+    return result
 }
 
-fun getLetterColor(index: Int, letter: Char): Color{
-    return if(randomWord[index] == letter){
-        Color.Green
-    }else if(randomWord.contains(letter) && randomWord[index] != letter){
-        Color.Yellow
+fun checkForResult(guessList: MutableList<List<Letter>>, updateGameState: (GameState) -> Unit){
+    if(guessList[guessList.size - 1].all { letter ->
+        letter.color == Color(0XFF67ac65)
+        }){
+        updateGameState(GameState.WON)
+    }else if(guessList.size == 6){
+        updateGameState(GameState.LOST)
     }else{
-        Color.Red
+        updateGameState(GameState.ON_GOING)
     }
 }
