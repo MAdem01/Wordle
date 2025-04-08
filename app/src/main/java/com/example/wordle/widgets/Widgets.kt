@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -19,14 +21,17 @@ import com.example.wordle.model.Letter
 
 
 @Composable
-fun GuessRow(letters: List<Letter>){
-    Row {
+fun GuessRow(modifier: Modifier = Modifier, letters: List<Letter>, content: @Composable () -> Unit = {}){
+    Row(modifier = modifier) {
         letters.forEach {letter ->
             Card(modifier = Modifier
                 .padding(5.dp)
-                .width(70.dp)
+                .width(65.dp)
                 .height(70.dp),
-                colors = CardDefaults.cardColors(containerColor = letter.color)
+                shape = RectangleShape,
+                colors = CardDefaults.cardColors(containerColor = letter.color),
+                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+
             )
             {
                 Box(modifier = Modifier
@@ -41,5 +46,6 @@ fun GuessRow(letters: List<Letter>){
                 }
             }
         }
+        content()
     }
 }
