@@ -95,9 +95,29 @@ fun MainContent(
 }
 
 fun createListOfLetters(word: String): List<Letter>{
-    val letters = word.mapIndexed{ index, letter  ->
-        val letterColor = getLetterColor(index = index, letter = letter)
-        Letter(char = letter.toString(), color = letterColor)
+    val target = randomWord.copyOf()
+    val guess = word.toCharArray()
+
+    val targetLetterCount = mutableMapOf<Char, Int>()
+    target.forEach { c -> targetLetterCount[c] = (targetLetterCount[c] ?: 0) + 1 }
+
+    val result = MutableList(5) { Letter(char = guess[it].toString(), color = Color(0XFF787e82))}
+
+    for (i in guess.indices) {
+        if (guess[i] == target[i]) {
+            result[i] = Letter(char = guess[i].toString(), color = Color(0XFF67ac65))
+            targetLetterCount[guess[i]] = targetLetterCount[guess[i]]!! - 1
+        }
+    }
+
+    for (i in guess.indices) {
+        if (result[i].color == Color.Red && target.contains(guess[i])) {
+            val count = targetLetterCount[guess[i]] ?: 0
+            if (count > 0) {
+                result[i] = Letter(char = guess[i].toString(), color = Color(0XFFc8b555))
+                targetLetterCount[guess[i]] = count - 1
+            }
+        }
     }
 
     return letters
