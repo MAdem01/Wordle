@@ -1,18 +1,24 @@
 package com.example.wordle.widgets
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,5 +53,36 @@ fun GuessRow(modifier: Modifier = Modifier, letters: List<Letter>, content: @Com
             }
         }
         content()
+    }
+}
+
+
+@Composable
+fun KeyBoard(guessedLetter: MutableMap<Char, Color>, updateGuessState: (letter: Char) -> Unit){
+    val alphabet = ('a'..'z').toList()
+    Column(modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        alphabet.chunked(7).forEach{ row ->
+            Row {
+                row.forEach{ letter ->
+                    Button(
+                        onClick = {
+                            updateGuessState(letter)
+                        },
+                        modifier = Modifier.padding(2.dp).width(50.dp),
+                        shape = RoundedCornerShape(3.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = guessedLetter[letter] ?: Color(0xFF787E82)
+                        )
+                    ) {
+                        Text(text = letter.uppercase(),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
     }
 }
