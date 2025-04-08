@@ -1,6 +1,5 @@
 package com.example.wordle.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,32 +8,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.wordle.components.InputField
 import com.example.wordle.model.GameState
 import com.example.wordle.model.Letter
+import com.example.wordle.utils.checkForResult
+import com.example.wordle.utils.evaluateLetterColors
 import com.example.wordle.widgets.GuessRow
+import com.example.wordle.widgets.KeyBoard
 
-val randomWord = "rando".toCharArray()
+val randomWord = "rhino".toCharArray()
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,13 +63,12 @@ fun WordleScreen(navController: NavController) {
 @Composable
 fun MainContent(
     paddingValues: PaddingValues,
-    onValChange: (String) -> Unit = {}
 ) {
-    val guessState = remember { mutableStateOf("") }
-    val validState = remember(guessState.value) { guessState.value.trim().isNotEmpty() }
+    val currentGuess = remember { mutableStateListOf<Letter>()}
     val guessList = remember { mutableStateListOf<List<Letter>>() }
-    val keyboardController = LocalSoftwareKeyboardController.current
     val gameState = remember { mutableStateOf(GameState.ON_GOING) }
+    val guessedLetters = remember { mutableStateMapOf<Char, Color>().withDefault { Color(0xFF787E82) } }
+
 
     Surface(modifier = Modifier.padding(paddingValues)) {
         Column(
@@ -77,6 +77,9 @@ fun MainContent(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            GuessRow(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp), letters = currentGuess)
 
             when (gameState.value) {
                 GameState.ON_GOING -> {
@@ -87,58 +90,28 @@ fun MainContent(
                     }
                 }
                 GameState.WON -> {
-                    Column(modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally){
-                        guessList.map{ guess ->
-                            GuessRow(
-                                letters = guess)
-                            HorizontalDivider()
-                        }
-                        Text(text = "You Won")
-                        Button(onClick = {
-                            guessList.clear()
-                            gameState.value = GameState.ON_GOING
-                        }){
-                            Text(text = "Try Again")
-                        }
-                    }
+                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Won")
+
                 }
                 else -> {
-                    Column(modifier = Modifier.weight(1f)){
-                        guessList.map{ guess ->
-                            GuessRow(
-                                letters = guess){
-                            }
-                        }
-                        Text(text = "You Lost")
-                        Button(onClick = {
-                            guessList.clear()
-                            gameState.value = GameState.ON_GOING
-                        }){
-                            Text(text = "Try Again")
+                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Lost")
+                }
+            }
+
+            if(gameState.value == GameState.ON_GOING) {
+                KeyBoard(guessedLetters) { letter ->
+                    if (currentGuess.size < 4) {
+                        currentGuess.add(Letter(char = letter.toString(), color = Color(0XFF787e82)))
+                    } else {
+                        currentGuess.add(Letter(char = letter.toString(), color = Color(0XFF787e82)))
+                        guessList.add(0, evaluateLetterColors(currentGuess, guessedLetters))
+                        currentGuess.clear()
+                        checkForResult(guessList) { updatedGameState ->
+                            gameState.value = updatedGameState
                         }
                     }
                 }
             }
-            InputField(
-                modifier = Modifier.fillMaxWidth(),
-                valueState = guessState,
-                labelId = "Guess",
-                enabled = true,
-                isSingleLine = true,
-                onAction = KeyboardActions {
-                    if (!validState) return@KeyboardActions
-                    onValChange(guessState.value.trim())
-                    if(guessState.value.length == 5 && gameState.value == GameState.ON_GOING)
-                        guessList.add(createListOfLetters(guessState.value))
-                    checkForResult(guessList){ updatedGameState ->
-                        gameState.value = updatedGameState
-                        Log.d("xd", "$updatedGameState $gameState")
-                    }
-                    keyboardController?.hide()
-                }
-            )
         }
     }
 }
