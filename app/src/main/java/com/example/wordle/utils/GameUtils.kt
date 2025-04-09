@@ -1,6 +1,5 @@
 package com.example.wordle.utils
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import com.example.wordle.model.GameState
 import com.example.wordle.model.Letter
@@ -11,7 +10,7 @@ fun evaluateLetterColors(letters: List<Letter>, letterColors: MutableMap<Char, C
     }.toCharArray()
 
     val targetLetterCount = mutableMapOf<Char, Int>()
-    letters.forEach { c -> targetLetterCount[c.char[0]] = (targetLetterCount[c.char[0]] ?: 0) + 1 }
+    targetWord.forEach { c -> targetLetterCount[c] = (targetLetterCount[c] ?: 0) + 1 }
 
     val result = MutableList(5) { index ->
         Letter(char = guess[index].toString(), color = Color(0xFF787E82))
@@ -30,7 +29,6 @@ fun evaluateLetterColors(letters: List<Letter>, letterColors: MutableMap<Char, C
             if (count > 0) {
                 result[i] = Letter(char = guess[i].toString(), color = Color(0XFFc8b555))
                 targetLetterCount[guess[i]] = count - 1
-                Log.d("count", "${targetLetterCount[guess[i]]}")
             }
         }
     }
