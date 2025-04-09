@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -97,13 +100,13 @@ fun MainContent(
                     }
                 }
                 GameState.WON -> {
-                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Won"){
+                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Won", targetWord = targetWord){
                         wordViewModel.fetchRandomWord()
                     }
 
                 }
                 else -> {
-                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Lost"){
+                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Lost", targetWord = targetWord){
                         wordViewModel.fetchRandomWord()
                     }
                 }
@@ -113,9 +116,9 @@ fun MainContent(
                 KeyBoard(guessedLetters) { letter ->
                     if(letter == '-' && currentGuess.size > 0){
                         currentGuess.removeAt(currentGuess.size - 1)
-                    }else if (currentGuess.size < 4) {
+                    }else if (currentGuess.size < 4 && letter != '-') {
                         currentGuess.add(Letter(char = letter.toString(), color = Color(0XFF787e82)))
-                    } else {
+                    } else if(letter != '-'){
                         currentGuess.add(Letter(char = letter.toString(), color = Color(0XFF787e82)))
                         guessList.add(0, evaluateLetterColors(currentGuess, guessedLetters, targetWord))
                         currentGuess.clear()
@@ -130,18 +133,41 @@ fun MainContent(
 }
 
 @Composable
-fun Result(gameState: MutableState<GameState>, guessList: MutableList<List<Letter>>, guessedLetters: MutableMap<Char, Color>, message: String, updateWord: () -> Unit){
+fun Result(gameState: MutableState<GameState>,
+           guessList: MutableList<List<Letter>>,
+           guessedLetters: MutableMap<Char, Color>,
+           message: String,
+           targetWord: String,
+           updateWord: () -> Unit){
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally){
+        if(message == "You Lost"){
+            val targetWordLetters = listOf(
+                Letter(char = targetWord[0].toString(), color = Color(0XFF67ac65)),
+                Letter(char = targetWord[1].toString(), color = Color(0XFF67ac65)),
+                Letter(char = targetWord[2].toString(), color = Color(0XFF67ac65)),
+                Letter(char = targetWord[3].toString(), color = Color(0XFF67ac65)),
+                Letter(char = targetWord[4].toString(), color = Color(0XFF67ac65)))
+            GuessRow(letters = targetWordLetters)
+        }
         guessList.map{ guess ->
             GuessRow(
                 letters = guess){
             }
         }
-        Text(text = message)
-        ResetButton(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters){
-            updateWord()
+        Card(modifier = Modifier.padding(10.dp),
+            elevation = CardDefaults.cardElevation(5.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = message)
+                ResetButton(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters){
+                    updateWord()
+                }
+            }
         }
     }
 }
@@ -153,7 +179,9 @@ fun ResetButton(gameState: MutableState<GameState>, guessList: MutableList<List<
         guessedLetters.clear()
         gameState.value = GameState.ON_GOING
         updateWord()
-    }){
+    },
+        Modifier.padding(5.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)){
         Text(text = "Try Again")
     }
 }
