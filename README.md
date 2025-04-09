@@ -30,7 +30,7 @@ The goal is to guess the correct word within a limited number of tries — just 
 ### 🏠 Home Screen
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c8e3c0f3-870e-41bb-96af-c4b5e798acfc" alt="Home Screen" width="400"/>
+  <img src="https://github.com/user-attachments/assets/c8e3c0f3-870e-41bb-96af-c4b5e798acfc" alt="Home Screen" width="250"/>
 </p>
 
 ---
@@ -38,7 +38,7 @@ The goal is to guess the correct word within a limited number of tries — just 
 ### 🎯 Guessing a Word
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/69b6bcd5-71cc-4e05-bb1f-449d712319a6" alt="Guessing GIF" width="400"/>
+  <img src="https://github.com/user-attachments/assets/69b6bcd5-71cc-4e05-bb1f-449d712319a6" alt="Guessing GIF" width="250"/>
 </p>
 
 ---
@@ -46,7 +46,7 @@ The goal is to guess the correct word within a limited number of tries — just 
 ### 🏁 Result Screen
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/be9d796b-1771-489c-b670-31a2cdeb7e66" alt="Result Screen" width="400"/>
+  <img src="https://github.com/user-attachments/assets/be9d796b-1771-489c-b670-31a2cdeb7e66" alt="Result Screen" width="250"/>
 </p>
 
 ---
