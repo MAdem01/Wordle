@@ -111,7 +111,9 @@ fun MainContent(
 
             if(gameState.value == GameState.ON_GOING) {
                 KeyBoard(guessedLetters) { letter ->
-                    if (currentGuess.size < 4) {
+                    if(letter == '-' && currentGuess.size > 0){
+                        currentGuess.removeAt(currentGuess.size - 1)
+                    }else if (currentGuess.size < 4) {
                         currentGuess.add(Letter(char = letter.toString(), color = Color(0XFF787e82)))
                     } else {
                         currentGuess.add(Letter(char = letter.toString(), color = Color(0XFF787e82)))

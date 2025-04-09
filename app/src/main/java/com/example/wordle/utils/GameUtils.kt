@@ -11,7 +11,7 @@ fun evaluateLetterColors(letters: List<Letter>, letterColors: MutableMap<Char, C
     }.toCharArray()
 
     val targetLetterCount = mutableMapOf<Char, Int>()
-    letters.forEach { c -> targetLetterCount[c.char[0]] = (targetLetterCount[c.char[0]] ?: 0) + 1 }
+    targetWord.forEach { c -> targetLetterCount[c] = (targetLetterCount[c] ?: 0) + 1 }
 
     val result = MutableList(5) { index ->
         Letter(char = guess[index].toString(), color = Color(0xFF787E82))
