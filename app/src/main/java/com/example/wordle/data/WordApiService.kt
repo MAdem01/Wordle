@@ -1,6 +1,5 @@
 package com.example.wordle.data
 
-import android.health.connect.datatypes.units.Length
 import retrofit2.http.GET
 import retrofit2.http.Query
 
