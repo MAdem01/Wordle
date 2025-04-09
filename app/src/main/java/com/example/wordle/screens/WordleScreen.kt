@@ -17,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -27,20 +29,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.wordle.model.GameState
 import com.example.wordle.model.Letter
+import com.example.wordle.model.WordViewModel
 import com.example.wordle.utils.checkForResult
 import com.example.wordle.utils.evaluateLetterColors
 import com.example.wordle.widgets.GuessRow
 import com.example.wordle.widgets.KeyBoard
 
-val randomWord = "rhino".toCharArray()
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WordleScreen(navController: NavController) {
+fun WordleScreen(navController: NavController,
+                 wordViewModel: WordViewModel = viewModel()
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -56,14 +59,18 @@ fun WordleScreen(navController: NavController) {
             )
         }
     ) { paddingValues ->
-        MainContent(paddingValues = paddingValues)
+        MainContent(paddingValues = paddingValues,
+            wordViewModel = wordViewModel
+            )
     }
 }
 
 @Composable
 fun MainContent(
     paddingValues: PaddingValues,
+    wordViewModel: WordViewModel
 ) {
+    val targetWord by wordViewModel.word.collectAsState()
     val currentGuess = remember { mutableStateListOf<Letter>()}
     val guessList = remember { mutableStateListOf<List<Letter>>() }
     val gameState = remember { mutableStateOf(GameState.ON_GOING) }
@@ -90,11 +97,15 @@ fun MainContent(
                     }
                 }
                 GameState.WON -> {
-                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Won")
+                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Won"){
+                        wordViewModel.fetchRandomWord()
+                    }
 
                 }
                 else -> {
-                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Lost")
+                    Result(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters, message = "You Lost"){
+                        wordViewModel.fetchRandomWord()
+                    }
                 }
             }
 
@@ -104,7 +115,7 @@ fun MainContent(
                         currentGuess.add(Letter(char = letter.toString(), color = Color(0XFF787e82)))
                     } else {
                         currentGuess.add(Letter(char = letter.toString(), color = Color(0XFF787e82)))
-                        guessList.add(0, evaluateLetterColors(currentGuess, guessedLetters))
+                        guessList.add(0, evaluateLetterColors(currentGuess, guessedLetters, targetWord))
                         currentGuess.clear()
                         checkForResult(guessList) { updatedGameState ->
                             gameState.value = updatedGameState
@@ -117,7 +128,7 @@ fun MainContent(
 }
 
 @Composable
-fun Result(gameState: MutableState<GameState>, guessList: MutableList<List<Letter>>, guessedLetters: MutableMap<Char, Color>, message: String){
+fun Result(gameState: MutableState<GameState>, guessList: MutableList<List<Letter>>, guessedLetters: MutableMap<Char, Color>, message: String, updateWord: () -> Unit){
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally){
@@ -127,16 +138,19 @@ fun Result(gameState: MutableState<GameState>, guessList: MutableList<List<Lette
             }
         }
         Text(text = message)
-        ResetButton(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters)
+        ResetButton(gameState = gameState, guessList = guessList, guessedLetters = guessedLetters){
+            updateWord()
+        }
     }
 }
 
 @Composable
-fun ResetButton(gameState: MutableState<GameState>, guessList: MutableList<List<Letter>>, guessedLetters: MutableMap<Char, Color>){
+fun ResetButton(gameState: MutableState<GameState>, guessList: MutableList<List<Letter>>, guessedLetters: MutableMap<Char, Color>, updateWord: () -> Unit){
     Button(onClick = {
         guessList.clear()
         guessedLetters.clear()
         gameState.value = GameState.ON_GOING
+        updateWord()
     }){
         Text(text = "Try Again")
     }

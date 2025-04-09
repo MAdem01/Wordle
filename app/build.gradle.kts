@@ -59,4 +59,9 @@ dependencies {
 
     //Navigation
     implementation(libs.androidx.navigation.compose)
+
+    //RetroFit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.kotlinx.coroutines.android)
 }

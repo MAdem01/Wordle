@@ -1,12 +1,11 @@
 package com.example.wordle.utils
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import com.example.wordle.model.GameState
 import com.example.wordle.model.Letter
-import com.example.wordle.screens.randomWord
 
-fun evaluateLetterColors(letters: List<Letter>, letterColors: MutableMap<Char, Color>): List<Letter>{
-    val target = randomWord.copyOf()
+fun evaluateLetterColors(letters: List<Letter>, letterColors: MutableMap<Char, Color>, targetWord: String): List<Letter>{
     val guess = letters.map{ letter ->
         letter.char[0].lowercaseChar()
     }.toCharArray()
@@ -19,18 +18,19 @@ fun evaluateLetterColors(letters: List<Letter>, letterColors: MutableMap<Char, C
     }
 
     for (i in guess.indices) {
-        if (guess[i] == target[i]) {
+        if (guess[i] == targetWord[i]) {
             result[i] = Letter(char = guess[i].toString(), color = Color(0XFF67ac65))
             targetLetterCount[guess[i]] = targetLetterCount[guess[i]]!! - 1
         }
     }
 
     for (i in guess.indices) {
-        if (result[i].color == Color(0xFF787E82) && target.contains(guess[i])) {
+        if (result[i].color == Color(0xFF787E82) && targetWord.contains(guess[i])) {
             val count = targetLetterCount[guess[i]] ?: 0
             if (count > 0) {
                 result[i] = Letter(char = guess[i].toString(), color = Color(0XFFc8b555))
                 targetLetterCount[guess[i]] = count - 1
+                Log.d("count", "${targetLetterCount[guess[i]]}")
             }
         }
     }
