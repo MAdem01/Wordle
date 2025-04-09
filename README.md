@@ -57,4 +57,3 @@ The goal is to guess the correct word within a limited number of tries — just 
 - Store and track high scores and streaks.
 - Include a dark mode toggle.
 - Animate keyboard feedback and transitions.
-# Wordle
