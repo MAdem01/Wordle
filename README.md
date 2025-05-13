@@ -1,59 +1,72 @@
-# 🎮 Jetpack Compose Wordle Clone
+# 📚 Jetpack Compose Pokémon Library
 
-A sleek, Android-native clone of the popular **Wordle** game, built using modern Android development tools like **Jetpack Compose**, **Navigation**, and **Retrofit**.
+An elegant, Android-native **Pokémon Library App** built with **Jetpack Compose**, featuring a random Pokémon generator and a searchable Pokédex with detailed Pokémon info — all backed by local storage for smooth offline access.
 
 ---
 
-## 🧩 About the Game
+## 🧩 About the App
 
-This project is a mobile game where the player guesses a **5-letter word** using the built-in keyboard. After each guess, the game evaluates and provides feedback:
+This mobile app brings the world of Pokémon to your fingertips:
 
-- 🟩 **Green**: Letter is in the correct position.
-- 🟨 **Yellow**: Letter exists in the word but in the wrong position.
-- ⬛ **Gray**: Letter is not in the word.
-
-The goal is to guess the correct word within a limited number of tries — just like the original Wordle!
+- 🎲 **Randomizer** – Discover a new Pokémon every time you tap.  
+- 📋 **All Pokémon Screen** – Browse or search the full Pokédex.  
+- 📖 **Details View** – View stats, types, and evolutions.  
+- 💾 **Offline Support** – Pokémon data is stored locally using RoomDB, so you can browse even without an internet connection.
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Jetpack Compose** – Declarative UI framework for Android.
-- **Jetpack Navigation** – For navigating between screens.
-- **Retrofit** – To fetch the word of the day from an external API.
-- **Material 3** – Modern UI components for a clean and minimal look.
+- **Jetpack Compose** – Declarative UI framework for modern Android apps.  
+- **Jetpack Navigation** – For clean and manageable screen navigation.  
+- **Retrofit** – To fetch Pokémon data from the [PokeAPI](https://pokeapi.co/).  
+- **RoomDB** – Local database to cache Pokémon data for fast and offline access.  
+- **Coil** – Image loading library to fetch and display Pokémon sprites.  
+- **Material 3** – Sleek and responsive design system.
 
 ---
 
-## 📱 Screenshots & Gameplay
+## 📱 Screenshots & Features
 
-### 🏠 Home Screen
+### 🏠 Main Screen – Randomizer
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c8e3c0f3-870e-41bb-96af-c4b5e798acfc" alt="Home Screen" width="250"/>
+  <img src="screenshots/494356001_1369085034366725_6204314868962329093_n.jpg" width="250"/>
+  <img src="screenshots/494360258_686167054318088_1495701296423828544_n.jpg" width="250"/>
+  <img src="screenshots/494357504_1404878704034228_5967385705310574548_n.jpg" width="250"/>
 </p>
+
+- Roll to reveal a **random Pokémon**.  
+- Displays name, image in a stylish layout.
 
 ---
 
-### 🎯 Guessing a Word
+### 📄 Pokémon Details Screen
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/69b6bcd5-71cc-4e05-bb1f-449d712319a6" alt="Guessing GIF" width="250"/>
+  <img src="screenshots/494360235_728352996196863_7783770273121195276_n.jpg" width="250"/>
+  <img src="screenshots/494356399_9950696288378989_8830066771313108294_n.jpg" width="250"/>
 </p>
+
+- Shows **type**, **base stats**, **image**, and **evolutions**.  
+- Clean layout for fast lookups.
 
 ---
 
-### 🏁 Result Screen
+### 📋 All Pokémon (Pokédex) Screen
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/be9d796b-1771-489c-b670-31a2cdeb7e66" alt="Result Screen" width="250"/>
+  <img src="screenshots/494357965_559098883910449_235413113180363228_n.jpg" width="250"/>
 </p>
+
+- Browse the **entire Pokédex**.  
+- Search by name with offline support.
 
 ---
 
 ## 🚀 Future Improvements
 
-- Add difficulty levels (e.g., 6-letter mode).
-- Store and track high scores and streaks.
-- Include a dark mode toggle.
-- Animate keyboard feedback and transitions.
+- Filter by type (e.g., Grass, Electric, Ghost).  
+- Add a "Favorites" feature with persistent storage.  
+- Shiny variant toggle.  
+- Dark/light mode toggle 🌗.  
